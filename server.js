@@ -1,6 +1,6 @@
 const http = require('http');
 const fetchToken = require('./getToken');
-const fetch = require('node-fetch'); // npm install node-fetch@2    aa
+const fetch = require('node-fetch'); // npm install node-fetch@2
 
 const PORT = 3000;
 const REST_URL = 'https://g4bc49070c2f126-florinatp.adb.eu-frankfurt-1.oraclecloudapps.com/ords/florin/save-json/access/';
@@ -17,30 +17,24 @@ const server = http.createServer(async (req, res) => {
     try {
       const token = await fetchToken();
 
-      if (!token) {
-        res.statusCode = 500;
-        res.end(JSON.stringify({ error: '⚠️ Nu am găsit tokenul.' }));
-        return;
-      }
-
       const payload = { token };
 
+      // Trimitem token-ul la REST Oracle
       const response = await fetch(REST_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload),
-        redirect: 'follow'
+        body: JSON.stringify(payload)
       });
 
-      const text = await response.text();
+      const result = await response.text();
 
-      res.end(JSON.stringify({ token }));
+      // Returnăm token-ul și răspunsul REST
+      res.end(JSON.stringify({ token, restResponse: result }));
 
     } catch (err) {
       res.statusCode = 500;
       res.end(JSON.stringify({ error: err.message }));
     }
-
     return;
   }
 
