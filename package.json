@@ -6,7 +6,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "puppeteer": "^24.0.2",
+    "puppeteer": "^25.0.2",
     "node-fetch": "^2.6.12"
   }
 }
