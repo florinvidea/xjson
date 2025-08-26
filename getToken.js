@@ -17,20 +17,9 @@ async function fetchToken() {
 
   // Extragem token-ul
 const token = await page.evaluate(() => {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => reject('Token timeout'), 10000); // 10 sec
-    const interval = setInterval(() => {
-      const html = document.documentElement.innerHTML;
-      console.log(html);
-      const match = html.match(/const\s+access_token\s*=\s*"([^"]+)"/);
-      if (match) {
-        clearInterval(interval);
-        clearTimeout(timeout);
-        resolve(match[1]);
-      }
-    }, 1500);
-  });
+  return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
 });
+
 
   await browser.close();
 
