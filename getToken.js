@@ -14,16 +14,21 @@ async function fetchToken() {
   // Setăm un timeout rezonabil
   await page.goto(TARGET_URL, { waitUntil: 'networkidle2', timeout: 30000 });
 
-await new Promise(r => setTimeout(r, 5000));  // așteaptă 5 secunde să se genereze tokenul
-const html = await page.content();
-console.log(html);
 
-  console.log('⏳ Căutăm tokenul în pagină...');
+  console.log('⏳ Așteptăm tokenul să fie generat de pagina web...');
 
-  // Extragem token-ul
-const token = await page.evaluate(() => {
-  return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
-});
+  const token = await page.evaluate(() => {
+    return new Promise((resolve) => {
+      const interval = setInterval(() => {
+        const html = document.documentElement.innerHTML;
+        const match = html.match(/const\s+access_token\s*=\s*"([^"]+)"/);
+        if (match) {
+          clearInterval(interval);
+          resolve(match[1]);
+        }
+      }, 500);
+    });
+  });
 
 
   await browser.close();
