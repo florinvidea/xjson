@@ -14,7 +14,7 @@ async function fetchToken() {
   // Setăm un timeout rezonabil
   await page.goto(TARGET_URL, { waitUntil: 'networkidle2', timeout: 30000 });
 
-await page.waitForTimeout(5000); // așteaptă 5 secunde să se genereze tokenul
+await new Promise(r => setTimeout(r, 5000));  // așteaptă 5 secunde să se genereze tokenul
 const html = await page.content();
 console.log(html);
 
